@@ -28,6 +28,10 @@ public class PlayerScript : MonoBehaviour
     public float time;
     public GameObject cloneobj;
     public int count;
+    void Start()
+    {
+        print(PlayerPrefs.GetInt("CurrentLevel"));
+    }
     void Update()
     {
         time += Time.deltaTime;
