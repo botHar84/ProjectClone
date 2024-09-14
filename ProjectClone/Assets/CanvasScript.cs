@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using TMPro;
 public class CanvasScript : MonoBehaviour
 {
+    public bool menu;
+    public bool paused;
     public GameObject backgrounds;
     public GameObject main;
     public GameObject setting;
@@ -18,7 +20,8 @@ public class CanvasScript : MonoBehaviour
     public Toggle fullscreen;
     public TMP_Dropdown res;
     public Resolution[] resolutions;
-    // Start is called before the first frame update
+    public Sprite pause;
+    public Sprite play;
     void Start()
     {
         sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
@@ -45,15 +48,39 @@ public class CanvasScript : MonoBehaviour
         res.AddOptions(options);
         res.value = currentresindex;
         res.RefreshShownValue();
-
+        if (!menu)
+        {
+            StartCoroutine("help");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape) && !menu)
+        {
+            pausefunc();
+        }
     }
-    public void play()
+    public void pausefunc()
+    {
+        // pause button in this case
+        paused = !paused;
+        setting.SetActive(paused);
+        if (paused)
+        {
+            backgrounds.GetComponent<Image>().sprite = play;
+            backgrounds.GetComponent<RectTransform>().localPosition += new Vector3(1, 3);
+            Time.timeScale = 0;
+        }
+        else
+        {
+            backgrounds.GetComponent<Image>().sprite = pause;
+            backgrounds.GetComponent<RectTransform>().localPosition -= new Vector3(1, 3);
+            Time.timeScale = 1;
+        }
+    }
+    public void playfunc()
     {
         StartCoroutine(scroll(721, levels));
     }
@@ -73,6 +100,10 @@ public class CanvasScript : MonoBehaviour
     {
         PlayerPrefs.SetInt("CurrentLevel", level);
         SceneManager.LoadScene("SampleScene");
+    }
+    public void mainmenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
     public IEnumerator scroll(int y, GameObject current)
     {
@@ -115,5 +146,20 @@ public class CanvasScript : MonoBehaviour
     {
         Resolution setting_res = resolutions[res.value];
         Screen.SetResolution(setting_res.width, setting_res.height, Screen.fullScreen);
+    }
+    public IEnumerator help()
+    {
+        yield return new WaitForSeconds(5);
+        print(PlayerPrefs.GetInt("CurrentLevel"));
+        if (PlayerPrefs.GetInt("CurrentLevel") == 1 && !paused)
+        {
+            // main = help message
+            for (int i = 0; i <= 255; i++)
+            {
+                main.transform.Find("Text").GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
+                main.transform.Find("Image").GetComponent<Image>().color = new Color(1, 1, 1, (float)i/255);
+                yield return new WaitForSeconds(.006f);
+            }
+        }
     }
 }

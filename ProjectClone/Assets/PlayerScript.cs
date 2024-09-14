@@ -37,20 +37,22 @@ public class PlayerScript : MonoBehaviour
         {
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jump);
         }
-
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Time.timeScale == 1)
         {
-            die();
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            die();
-            current.Clear();
-            frames.Clear();
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                die();
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                die();
+                current.Clear();
+                frames.Clear();
+            }
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
 
         if (right && horizontal < 0f || !right && horizontal > 0f)
