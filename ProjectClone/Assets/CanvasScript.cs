@@ -1,40 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 public class CanvasScript : MonoBehaviour
 {
     public GameObject backgrounds;
     public GameObject main;
     public GameObject setting;
     public GameObject levels;
+    public AudioMixer sfxmix;
+    public AudioMixer musicmix;
+    public Slider sfx;
+    public Slider music;
+    public Toggle fullscreen;
+    public TMP_Dropdown res;
+    public Resolution[] resolutions;
     // Start is called before the first frame update
     void Start()
     {
-        // sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
-        // sfx.value = PlayerPrefs.GetFloat("SFX");
-        // musicmix.SetFloat("volume", (PlayerPrefs.GetFloat("Music")*80)-60f);
-        // music.value = PlayerPrefs.GetFloat("Music");
+        sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
+        sfx.value = PlayerPrefs.GetFloat("SFX");
+        musicmix.SetFloat("volume", (PlayerPrefs.GetFloat("Music")*80)-60f);
+        music.value = PlayerPrefs.GetFloat("Music");
 
-        // Screen.fullScreen = PlayerPrefs.GetInt("Fullscreen") == 1;
-        // fullscreen.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
+        Screen.fullScreen = PlayerPrefs.GetInt("Fullscreen") == 1;
+        fullscreen.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
 
-        // resolutions = Screen.resolutions;
-        // res.ClearOptions();
-        // List<string> options = new List<string>();
-        // int currentresindex = 0;
-        // for (int i = 0; i < resolutions.Length; i++)
-        // {
-        //     string option = resolutions[i].width + " x " + resolutions[i].height;
-        //     options.Add(option);
-        //     if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
-        //     {
-        //         currentresindex = i;
-        //     }
-        // }
-        // res.AddOptions(options);
-        // res.value = currentresindex;
-        // res.RefreshShownValue();
+        resolutions = Screen.resolutions;
+        res.ClearOptions();
+        List<string> options = new List<string>();
+        int currentresindex = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+            options.Add(option);
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            {
+                currentresindex = i;
+            }
+        }
+        res.AddOptions(options);
+        res.value = currentresindex;
+        res.RefreshShownValue();
 
     }
 
@@ -61,7 +71,8 @@ public class CanvasScript : MonoBehaviour
     }
     public void levelselect(int level)
     {
-        
+        PlayerPrefs.SetInt("CurrentLevel", level);
+        SceneManager.LoadScene("SampleScene");
     }
     public IEnumerator scroll(int y, GameObject current)
     {
@@ -76,33 +87,33 @@ public class CanvasScript : MonoBehaviour
         }
         current.SetActive(true);
     }
-    // public void sfxadjust()
-    // {
-    //     PlayerPrefs.SetFloat("SFX", sfx.value);
-    //     sfx.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("SFX")*100)+"%";
-    //     sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
-    // }
-    // public void musicadjust()
-    // {
-    //     PlayerPrefs.SetFloat("Music", music.value);
-    //     music.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("Music")*100)+"%";
-    //     musicmix.SetFloat("volume", (float)(PlayerPrefs.GetFloat("Music")*80)-60f);
-    // }
-    // public void fullscreentoggle()
-    // {
-    //     Screen.fullScreen = !Screen.fullScreen;
-    //     if (fullscreen.isOn)
-    //     {
-    //         PlayerPrefs.SetInt("Fullscreen", 1);
-    //     }
-    //     else
-    //     {
-    //         PlayerPrefs.SetInt("Fullscreen", 0);
-    //     }
-    // }
-    // public void changeres()
-    // {
-    //     Resolution setting_res = resolutions[res.value];
-    //     Screen.SetResolution(setting_res.width, setting_res.height, Screen.fullScreen);
-    // }
+    public void sfxadjust()
+    {
+        PlayerPrefs.SetFloat("SFX", sfx.value);
+        sfx.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("SFX")*100)+"%";
+        sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
+    }
+    public void musicadjust()
+    {
+        PlayerPrefs.SetFloat("Music", music.value);
+        music.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("Music")*100)+"%";
+        musicmix.SetFloat("volume", (float)(PlayerPrefs.GetFloat("Music")*80)-60f);
+    }
+    public void fullscreentoggle()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+        if (fullscreen.isOn)
+        {
+            PlayerPrefs.SetInt("Fullscreen", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Fullscreen", 0);
+        }
+    }
+    public void changeres()
+    {
+        Resolution setting_res = resolutions[res.value];
+        Screen.SetResolution(setting_res.width, setting_res.height, Screen.fullScreen);
+    }
 }
