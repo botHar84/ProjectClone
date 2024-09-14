@@ -59,6 +59,10 @@ public class CanvasScript : MonoBehaviour
     {
         Application.Quit();
     }
+    public void levelselect(int level)
+    {
+        
+    }
     public IEnumerator scroll(int y, GameObject current)
     {
         main.SetActive(false);
