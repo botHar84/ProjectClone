@@ -7,6 +7,7 @@ TagManager:
   - Clone
   - Lever
   - Point
+  - Door
   layers:
   - Default
   - TransparentFX

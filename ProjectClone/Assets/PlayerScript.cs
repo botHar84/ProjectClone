@@ -98,8 +98,13 @@ public class PlayerScript : MonoBehaviour
         }
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Lever"))
         {
-            g.GetComponent<ObjectScript>().off();
+            g.GetComponent<ObjectScript>().turnoff();
         }
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Door"))
+        {
+            g.GetComponent<ObjectScript>().turnoff();
+        }
+        
         frames.Clear();
         foreach (Frame f in current)
         {

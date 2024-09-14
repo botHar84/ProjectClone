@@ -10,16 +10,10 @@ public class ObjectScript : MonoBehaviour
     public Sprite activated;
     public SpriteRenderer sr;
     public int amnt;
-    // Start is called before the first frame update
-    void Start()
+    public ObjectScript subject;
+    public void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        sr = GetComponent<SpriteRenderer>();
     }
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -29,14 +23,14 @@ public class ObjectScript : MonoBehaviour
             {
                 if (!on)
                 {
-                    on = true;
-                    sr.sprite = activated;
+                    turnon();
+                    subject.turnon();
                 }
             }
             else if (type == "Plate")
             {
-                on = true;
-                sr.sprite = activated;
+                turnon();
+                subject.turnon();
                 amnt++;
             }
         }
@@ -48,13 +42,27 @@ public class ObjectScript : MonoBehaviour
             amnt--;
             if (amnt <= 0)
             {
-                off();
+                turnoff();
+                subject.turnoff();
             }
         }
     }
-    public void off()
+    public void turnon()
+    {
+        on = true;
+        sr.sprite = activated;
+        if (type == "Door")
+        {
+            GetComponent<BoxCollider2D>().enabled = false;
+        }
+    }
+    public void turnoff()
     {
         on = false;
         sr.sprite = unactivated;
+        if (type == "Door")
+        {
+            GetComponent<BoxCollider2D>().enabled = true;
+        }
     }
 }
