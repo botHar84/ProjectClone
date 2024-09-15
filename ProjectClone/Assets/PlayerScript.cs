@@ -70,10 +70,6 @@ public class PlayerScript : MonoBehaviour
         }
 
         cameraobj.transform.position = UnityEngine.Vector3.Lerp(cameraobj.transform.position, new UnityEngine.Vector3(transform.position.x, transform.position.y, -10), cameraspeed);
-        if (transform.position.y <= -8)
-        {
-            die();
-        }
         
         if (count==5)
         {
@@ -97,7 +93,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void die()
     {
-        transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
+        //transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Clone"))
         {
             if (g != null)
