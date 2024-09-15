@@ -28,6 +28,7 @@ public class PlayerScript : MonoBehaviour
     public float time;
     public GameObject cloneobj;
     public int count;
+    public bool reversed;
     void Start()
     {
         print(PlayerPrefs.GetInt("CurrentLevel"));
@@ -50,6 +51,7 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.R))
             {
                 die();
+                StopCoroutine("clone");
                 current.Clear();
                 frames.Clear();
             }
@@ -95,6 +97,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void die()
     {
+        transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Clone"))
         {
             if (g != null)
@@ -119,7 +122,8 @@ public class PlayerScript : MonoBehaviour
         current.Clear();
         GameObject point = GameObject.Find("Point"+checkpoint);
         transform.position = point.transform.position;
-        StartCoroutine("clone");
+        StartCoroutine("clone", reversed);
+        reversed = false;
     }
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -132,30 +136,58 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-    public IEnumerator clone()
+    public IEnumerator clone(bool reverse)
     {
         yield return new WaitForSeconds(1);
         GameObject point = GameObject.Find("Point"+checkpoint);
         GameObject current = Instantiate(cloneobj, point.transform.position, quaternion.identity);
-        for (int i = 0; i < frames.Count - 2; i++)
+        if (reverse)
         {
-            Frame startFrame = frames[i];
-            Frame endFrame = frames[i + 1];
-            float elapsedTime = 0f;
-            float timeBetweenFrames = endFrame.timeStamp - startFrame.timeStamp;
-
-            while (elapsedTime < timeBetweenFrames)
+            current.GetComponent<SpriteRenderer>().color = Color.blue;
+            for (int i = frames.Count-2; i > 0; i--)
             {
-                if (current != null)
+                Frame startFrame = frames[i];
+                Frame endFrame = frames[i - 1];
+                float elapsedTime = 0f;
+                float timeBetweenFrames = startFrame.timeStamp - endFrame.timeStamp;
+
+                while (elapsedTime < timeBetweenFrames)
                 {
-                    current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                    if (current != null)
+                    {
+                        current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    elapsedTime += Time.deltaTime*.7f;
+                    yield return null;
                 }
-                else
+            }
+        }
+        else
+        {
+            for (int i = 0; i < frames.Count - 1; i++)
+            {
+                Frame startFrame = frames[i];
+                Frame endFrame = frames[i + 1];
+                float elapsedTime = 0f;
+                float timeBetweenFrames = endFrame.timeStamp - startFrame.timeStamp;
+
+                while (elapsedTime < timeBetweenFrames)
                 {
-                    break;
+                    if (current != null)
+                    {
+                        current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    elapsedTime += Time.deltaTime*.7f;
+                    yield return null;
                 }
-                elapsedTime += Time.deltaTime*.7f;
-                yield return null;
             }
         }
         Destroy(current);
