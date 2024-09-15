@@ -93,7 +93,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void die()
     {
-        //transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
+        transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Clone"))
         {
             if (g != null)
