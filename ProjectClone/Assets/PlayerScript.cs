@@ -107,7 +107,10 @@ public class PlayerScript : MonoBehaviour
         }
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Door"))
         {
-            g.GetComponent<ObjectScript>().turnoff();
+            if (!g.GetComponent<ObjectScript>().default_)
+            {
+                g.GetComponent<ObjectScript>().turnoff();
+            }
         }
         
         frames.Clear();

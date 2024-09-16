@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class KillPlayer : MonoBehaviour
 {
-    public void OnTriggerEnter2D (Collider2D other) {
-        if (other.gameObject.tag == "Player"){
+    void OnTriggerEnter2D (Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
             other.gameObject.GetComponent<PlayerScript>().die();
         }
     }

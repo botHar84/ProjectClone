@@ -6,6 +6,7 @@ public class ObjectScript : MonoBehaviour
 {
     public string type;
     public bool on;
+    public bool default_;
     public Sprite unactivated;
     public Sprite activated;
     public SpriteRenderer sr;
@@ -20,6 +21,11 @@ public class ObjectScript : MonoBehaviour
         {
             og = transform.position;
             StartCoroutine("move");
+        }
+        if (on)
+        {
+            default_ = on;
+            turnon();
         }
     }
     void OnTriggerEnter2D(Collider2D other)
