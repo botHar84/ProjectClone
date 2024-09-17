@@ -8,6 +8,7 @@ TagManager:
   - Lever
   - Point
   - Door
+  - SpikeCeiling
   layers:
   - Default
   - TransparentFX

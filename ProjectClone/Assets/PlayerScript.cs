@@ -112,7 +112,11 @@ public class PlayerScript : MonoBehaviour
                 g.GetComponent<ObjectScript>().turnoff();
             }
         }
-        
+        foreach(GameObject g in GameObject.FindGameObjectsWithTag("SpikeCeiling"))
+        {
+            g.transform.position = new UnityEngine.Vector3(0, 5, 0);
+            g.GetComponent<ObjectScript>().turnoff();
+        }
         frames.Clear();
         foreach (Frame f in current)
         {
@@ -145,23 +149,29 @@ public class PlayerScript : MonoBehaviour
             current.GetComponent<SpriteRenderer>().color = Color.blue;
             for (int i = frames.Count-2; i > 0; i--)
             {
-                Frame startFrame = frames[i];
-                Frame endFrame = frames[i - 1];
-                float elapsedTime = 0f;
-                float timeBetweenFrames = startFrame.timeStamp - endFrame.timeStamp;
-
-                while (elapsedTime < timeBetweenFrames)
+                if (frames.Count > 0)
                 {
-                    if (current != null)
+                    Frame startFrame = frames[i];
+                    Frame endFrame = frames[i - 1];
+                    float elapsedTime = 0f;
+                    float timeBetweenFrames = startFrame.timeStamp - endFrame.timeStamp;
+                    while (elapsedTime < timeBetweenFrames)
                     {
-                        current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                        if (current != null)
+                        {
+                            current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        elapsedTime += Time.deltaTime*.7f;
+                        yield return null;
                     }
-                    else
-                    {
-                        break;
-                    }
-                    elapsedTime += Time.deltaTime*.7f;
-                    yield return null;
+                }
+                else
+                {
+                    break;
                 }
             }
         }

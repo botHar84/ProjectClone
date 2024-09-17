@@ -16,7 +16,10 @@ public class ObjectScript : MonoBehaviour
     public Vector3 change;
     public void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
+        if (name != "SpikeCeiling")
+        {
+            sr = GetComponent<SpriteRenderer>();
+        }
         if (type == "Platform")
         {
             og = transform.position;
@@ -80,7 +83,10 @@ public class ObjectScript : MonoBehaviour
     public void turnon()
     {
         on = true;
-        sr.sprite = activated;
+        if (name != "SpikeCeiling")
+        {
+            sr.sprite = activated;
+        }
         if (type == "Door")
         {
             GetComponent<BoxCollider2D>().enabled = false;
@@ -89,7 +95,10 @@ public class ObjectScript : MonoBehaviour
     public void turnoff()
     {
         on = false;
-        sr.sprite = unactivated;
+        if (name != "SpikeCeiling")
+        {
+            sr.sprite = unactivated;
+        }
         if (type == "Door")
         {
             GetComponent<BoxCollider2D>().enabled = true;
@@ -121,7 +130,7 @@ public class ObjectScript : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y)
+        if (type == "Platform" && collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y && name != "SpikeCeiling")
         {
             collision.gameObject.transform.SetParent(this.gameObject.transform);
         }
@@ -129,7 +138,7 @@ public class ObjectScript : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y)
+        if (type == "Platform" && collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y && name != "SpikeCeiling")
         {
             collision.gameObject.transform.SetParent(null);
         }

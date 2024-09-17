@@ -145,10 +145,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Platform
   on: 0
+  default_: 0
   unactivated: {fileID: 21300000, guid: d590b6ffc32711949ab5139430503d9f, type: 3}
   activated: {fileID: 21300000, guid: d590b6ffc32711949ab5139430503d9f, type: 3}
   sr: {fileID: 0}
-  amnt: 0.25
+  amnt: 0.006
   subject: {fileID: 0}
   og: {x: 0, y: 0, z: 0}
   change: {x: -2, y: 0, z: 0}
