@@ -132,7 +132,10 @@ public class ObjectScript : MonoBehaviour
     {
         if (type == "Platform" && collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y && name != "SpikeCeiling")
         {
-            collision.gameObject.transform.SetParent(this.gameObject.transform);
+            if (gameObject.activeInHierarchy)
+            {
+                collision.gameObject.transform.SetParent(this.gameObject.transform);
+            }
         }
     }
 
@@ -140,7 +143,10 @@ public class ObjectScript : MonoBehaviour
     {
         if (type == "Platform" && collision.gameObject.tag == "Player" && collision.gameObject.transform.position.y > transform.position.y && name != "SpikeCeiling")
         {
-            collision.gameObject.transform.SetParent(null);
+            if (gameObject.activeInHierarchy)
+            {
+                collision.gameObject.transform.SetParent(null);
+            }
         }
     }
 }
