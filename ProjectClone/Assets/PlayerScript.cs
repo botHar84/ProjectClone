@@ -93,6 +93,7 @@ public class PlayerScript : MonoBehaviour
     }
     public void die()
     {
+        rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Clone"))
         {
@@ -114,7 +115,7 @@ public class PlayerScript : MonoBehaviour
         }
         foreach(GameObject g in GameObject.FindGameObjectsWithTag("SpikeCeiling"))
         {
-            g.transform.position = new UnityEngine.Vector3(0, 5, 0);
+            g.transform.position = g.GetComponent<ObjectScript>().og;
             g.GetComponent<ObjectScript>().turnoff();
         }
         frames.Clear();
@@ -149,7 +150,7 @@ public class PlayerScript : MonoBehaviour
             current.GetComponent<SpriteRenderer>().color = Color.blue;
             for (int i = frames.Count-2; i > 0; i--)
             {
-                if (frames.Count > 0)
+                if (frames.Count > i)
                 {
                     Frame startFrame = frames[i];
                     Frame endFrame = frames[i - 1];

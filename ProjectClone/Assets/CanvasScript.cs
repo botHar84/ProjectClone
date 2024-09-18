@@ -156,15 +156,13 @@ public class CanvasScript : MonoBehaviour
             // main = help message
             for (int i = 0; i <= 255; i++)
             {
-                main.transform.Find("Text").GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
-                main.transform.Find("Image").GetComponent<Image>().color = new Color(1, 1, 1, (float)i/255);
+                main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
                 yield return new WaitForSeconds(.006f);
             }
             yield return new WaitForSeconds(5);
             for (int i = 255; i >= 0; i--)
             {
-                main.transform.Find("Text").GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
-                main.transform.Find("Image").GetComponent<Image>().color = new Color(1, 1, 1, (float)i/255);
+                main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
                 yield return new WaitForSeconds(.006f);
             }
         }
