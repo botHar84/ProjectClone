@@ -22,6 +22,7 @@ public class CanvasScript : MonoBehaviour
     public Resolution[] resolutions;
     public Sprite pause;
     public Sprite play;
+    public Transform levelcollection;
     void Start()
     {
         sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
@@ -48,9 +49,20 @@ public class CanvasScript : MonoBehaviour
         res.AddOptions(options);
         res.value = currentresindex;
         res.RefreshShownValue();
-        if (!menu)
+        if (!menu && PlayerPrefs.GetInt("CurrentLevel") == 1)
         {
-            StartCoroutine("help");
+            StartCoroutine("help", "HelpMessage");
+        }
+        if (menu)
+        {
+            foreach (Transform g in levelcollection)
+            {
+                g.gameObject.GetComponent<Image>().color = new Color((float)110/255, (float)110/255, (float)110/255, 1);
+            }
+            for (int i = 1; i <= PlayerPrefs.GetInt("HighestLevel")+1; i++)
+            {
+                levelcollection.Find("Level"+i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            }
         }
     }
 
@@ -98,11 +110,19 @@ public class CanvasScript : MonoBehaviour
     }
     public void levelselect(int level)
     {
-        PlayerPrefs.SetInt("CurrentLevel", level);
-        SceneManager.LoadScene("SampleScene");
+        if (PlayerPrefs.GetInt("HighestLevel")+1 >= level)
+        {
+            PlayerPrefs.SetInt("CurrentLevel", level);
+            SceneManager.LoadScene("SampleScene");
+        }
+        else
+        {
+            print("nah u havent unlocked that yet g");
+        }
     }
     public void mainmenu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }
     public IEnumerator scroll(int y, GameObject current)
@@ -114,7 +134,7 @@ public class CanvasScript : MonoBehaviour
         for(int i = 0; i < 20; i++)
         {
             backgrounds.GetComponent<RectTransform>().localPosition = Vector3.Lerp(backgrounds.GetComponent<RectTransform>().localPosition, new Vector3(0, y, 0), .25f);
-            yield return new WaitForSeconds(.05f);
+            yield return new WaitForSeconds(.02f);
         }
         current.SetActive(true);
     }
@@ -147,19 +167,27 @@ public class CanvasScript : MonoBehaviour
         Resolution setting_res = resolutions[res.value];
         Screen.SetResolution(setting_res.width, setting_res.height, Screen.fullScreen);
     }
-    public IEnumerator help()
+    public void extHelp(string message)
     {
-        yield return new WaitForSeconds(5);
-        print(PlayerPrefs.GetInt("CurrentLevel"));
-        if (PlayerPrefs.GetInt("CurrentLevel") == 1)
+        StartCoroutine("help", message);
+    }
+    public IEnumerator help(string message)
+    {
+        yield return new WaitForSeconds(2);
+        if (message == "HelpMessage")
         {
-            // main = help message
+            yield return new WaitForSeconds(10);
+            message = "Press [ESC] to see helpful keybinds.";
+        }
+        if (PlayerPrefs.GetInt("CurrentLevel") == 1 || (PlayerPrefs.GetInt("CurrentLevel") != 1 && message != "Press [ESC] to see helpful keybinds."))
+        {
+            main.GetComponent<TextMeshProUGUI>().text = message;
             for (int i = 0; i <= 255; i++)
             {
                 main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
                 yield return new WaitForSeconds(.006f);
             }
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
             for (int i = 255; i >= 0; i--)
             {
                 main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);

@@ -29,9 +29,12 @@ public class PlayerScript : MonoBehaviour
     public GameObject cloneobj;
     public int count;
     public bool reversed;
+    public GameObject[] levels;
+    public CanvasScript cs;
     void Start()
     {
         print(PlayerPrefs.GetInt("CurrentLevel"));
+        LoadLevel();
     }
     void Update()
     {
@@ -201,5 +204,22 @@ public class PlayerScript : MonoBehaviour
             }
         }
         Destroy(current);
+    }
+    public void LoadLevel()
+    {
+        // reset variables
+        rb.velocity = new UnityEngine.Vector2(0, 0);
+        reversed = false;
+        transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
+        checkpoint = 0;
+        frames.Clear();
+        current.Clear();
+        foreach(GameObject g in levels)
+        {
+            g.SetActive(false);
+        }
+        levels[PlayerPrefs.GetInt("CurrentLevel")-1].SetActive(true);
+        transform.position = levels[PlayerPrefs.GetInt("CurrentLevel")-1].transform.Find("Objects").Find("Point0").position;
+        cs.extHelp("Level "+PlayerPrefs.GetInt("CurrentLevel"));
     }
 }

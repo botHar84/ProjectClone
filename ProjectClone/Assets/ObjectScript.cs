@@ -51,12 +51,21 @@ public class ObjectScript : MonoBehaviour
             }
             if (other.gameObject.tag == "Player")
             {
-                // load next level & display "Level 5" (eg.)
                 if (type == "EndDoor" && on)
                 {
-                    if (PlayerPrefs.GetInt("CurrentLevel")>PlayerPrefs.GetInt("Complete"))
+                    if (PlayerPrefs.GetInt("CurrentLevel") > PlayerPrefs.GetInt("HighestLevel"))
                     {
-                        PlayerPrefs.SetInt("Complete", PlayerPrefs.GetInt("CurrentLevel"));
+                        PlayerPrefs.SetInt("HighestLevel", PlayerPrefs.GetInt("CurrentLevel"));
+                    }
+                    if (PlayerPrefs.GetInt("CurrentLevel") < 10) // any levels left?
+                    {
+                        PlayerPrefs.SetInt("CurrentLevel", PlayerPrefs.GetInt("CurrentLevel")+1);
+                        print("new level");
+                        other.gameObject.GetComponent<PlayerScript>().LoadLevel();
+                    }
+                    else
+                    {
+                        // win screen
                     }
                 }
                 else if (type == "TimeCrystal")
