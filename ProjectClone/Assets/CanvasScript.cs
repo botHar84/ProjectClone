@@ -94,11 +94,11 @@ public class CanvasScript : MonoBehaviour
     }
     public void playfunc()
     {
-        StartCoroutine(scroll(721, levels));
+        StartCoroutine(scroll(10, levels));
     }
     public void settings()
     {
-        StartCoroutine(scroll(-721, setting));
+        StartCoroutine(scroll(-10, setting));
     }
     public void close()
     {
@@ -125,7 +125,7 @@ public class CanvasScript : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }
-    public IEnumerator scroll(int y, GameObject current)
+    public IEnumerator scroll(float y, GameObject current)
     {
         main.SetActive(false);
         setting.SetActive(false);
@@ -133,7 +133,7 @@ public class CanvasScript : MonoBehaviour
 
         for(int i = 0; i < 20; i++)
         {
-            backgrounds.GetComponent<RectTransform>().localPosition = Vector3.Lerp(backgrounds.GetComponent<RectTransform>().localPosition, new Vector3(0, y, 0), .25f);
+            backgrounds.transform.position = Vector3.Lerp(backgrounds.transform.position, new Vector3(0, y, 0), .25f);
             yield return new WaitForSeconds(.02f);
         }
         current.SetActive(true);
