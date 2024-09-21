@@ -49,11 +49,11 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
-                die();
+                die(true);
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-                die();
+                die(true);
                 StopCoroutine("clone");
                 current.Clear();
                 frames.Clear();
@@ -94,7 +94,7 @@ public class PlayerScript : MonoBehaviour
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
-    public void die()
+    public void die(bool self)
     {
         rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
@@ -107,7 +107,10 @@ public class PlayerScript : MonoBehaviour
         }
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Lever"))
         {
-            g.GetComponent<ObjectScript>().turnoff();
+            if (g.GetComponent<ObjectScript>().on)
+            {
+                g.GetComponent<ObjectScript>().turnoff();
+            }
         }
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Door"))
         {
@@ -118,8 +121,11 @@ public class PlayerScript : MonoBehaviour
         }
         foreach(GameObject g in GameObject.FindGameObjectsWithTag("SpikeCeiling"))
         {
-            g.transform.position = g.GetComponent<ObjectScript>().og;
-            g.GetComponent<ObjectScript>().turnoff();
+            if (!g.GetComponent<ObjectScript>().on || !self)
+            {
+                g.transform.position = g.GetComponent<ObjectScript>().og;
+                g.GetComponent<ObjectScript>().turnoff();
+            }
         }
         frames.Clear();
         foreach (Frame f in current)

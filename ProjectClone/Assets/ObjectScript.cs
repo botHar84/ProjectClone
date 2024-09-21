@@ -40,13 +40,13 @@ public class ObjectScript : MonoBehaviour
                 if (!on)
                 {
                     turnon();
-                    subject.turnon();
+                    //subject.turnon();
                 }
             }
             else if (type == "Plate")
             {
                 turnon();
-                subject.turnon();
+                //subject.turnon();
                 amnt++;
             }
             if (other.gameObject.tag == "Player")
@@ -85,14 +85,22 @@ public class ObjectScript : MonoBehaviour
             if (amnt <= 0)
             {
                 turnoff();
-                subject.turnoff();
+                //subject.turnoff();
             }
         }
     }
     public void turnon()
     {
         on = true;
-        if (name != "SpikeCeiling")
+        if (name == "Plate" || name == "Lever")
+        {
+            subject.turnon();
+        }
+        if (name == "Lever")
+        {
+            gameObject.GetComponent<Animator>().SetTrigger("On");
+        }
+        else if (name == "Plate" || name == "EndDoor")
         {
             sr.sprite = activated;
         }
@@ -104,7 +112,16 @@ public class ObjectScript : MonoBehaviour
     public void turnoff()
     {
         on = false;
-        if (name != "SpikeCeiling")
+        if (name == "Plate" || name == "Lever")
+        {
+            subject.turnoff();
+        }
+        //subject.turnoff(); // here or ontrigger enter/exit?
+        if (name == "Lever")
+        {
+            gameObject.GetComponent<Animator>().SetTrigger("Off");
+        }
+        else if (name == "Plate" || name == "EndDoor")
         {
             sr.sprite = unactivated;
         }

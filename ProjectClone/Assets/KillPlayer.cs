@@ -8,7 +8,7 @@ public class KillPlayer : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            other.gameObject.GetComponent<PlayerScript>().die();
+            other.gameObject.GetComponent<PlayerScript>().die(false);
         }
     }
 }
