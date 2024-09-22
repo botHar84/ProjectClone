@@ -23,6 +23,7 @@ public class CanvasScript : MonoBehaviour
     public Sprite pause;
     public Sprite play;
     public Transform levelcollection;
+    public bool moving;
     void Start()
     {
         sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
@@ -72,6 +73,13 @@ public class CanvasScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && !menu)
         {
             pausefunc();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && menu)
+        {
+            if (!moving)
+            {
+                StartCoroutine(scroll(0, main));
+            }
         }
     }
     public void pausefunc()
@@ -127,6 +135,7 @@ public class CanvasScript : MonoBehaviour
     }
     public IEnumerator scroll(float y, GameObject current)
     {
+        moving = true;
         main.SetActive(false);
         setting.SetActive(false);
         levels.SetActive(false);
@@ -137,6 +146,7 @@ public class CanvasScript : MonoBehaviour
             yield return new WaitForSeconds(.02f);
         }
         current.SetActive(true);
+        moving = false;
     }
     public void sfxadjust()
     {

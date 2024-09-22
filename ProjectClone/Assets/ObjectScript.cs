@@ -92,15 +92,15 @@ public class ObjectScript : MonoBehaviour
     public void turnon()
     {
         on = true;
-        if (name == "Plate" || name == "Lever")
+        if (type == "Plate" || type == "Lever")
         {
             subject.turnon();
         }
-        if (name == "Lever")
+        if (type == "Lever" || type == "EndDoor")
         {
             gameObject.GetComponent<Animator>().SetTrigger("On");
         }
-        else if (name == "Plate" || name == "EndDoor")
+        else if (type == "Plate")
         {
             sr.sprite = activated;
         }
@@ -116,12 +116,11 @@ public class ObjectScript : MonoBehaviour
         {
             subject.turnoff();
         }
-        //subject.turnoff(); // here or ontrigger enter/exit?
-        if (name == "Lever")
+        if (name == "Lever" || name == "EndDoor")
         {
             gameObject.GetComponent<Animator>().SetTrigger("Off");
         }
-        else if (name == "Plate" || name == "EndDoor")
+        else if (name == "Plate")
         {
             sr.sprite = unactivated;
         }

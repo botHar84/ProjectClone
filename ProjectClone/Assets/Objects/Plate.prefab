@@ -145,8 +145,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Plate
   on: 0
+  default_: 0
   unactivated: {fileID: 21300000, guid: c05c9a834bddbc94298146c13ad02bcb, type: 3}
   activated: {fileID: 21300000, guid: 0ef5c60ec42c34a4189ae82a1477f2af, type: 3}
   sr: {fileID: 7319915007191480437}
   amnt: 0
   subject: {fileID: 0}
+  og: {x: 0, y: 0, z: 0}
+  change: {x: 0, y: 0, z: 0}

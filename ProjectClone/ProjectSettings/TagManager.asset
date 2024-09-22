@@ -9,6 +9,7 @@ TagManager:
   - Point
   - Door
   - SpikeCeiling
+  - Slope
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -31,6 +32,8 @@ public class PlayerScript : MonoBehaviour
     public bool reversed;
     public GameObject[] levels;
     public CanvasScript cs;
+    public Animator an;
+    public GameObject deathsprite;
     void Start()
     {
         print(PlayerPrefs.GetInt("CurrentLevel"));
@@ -40,11 +43,14 @@ public class PlayerScript : MonoBehaviour
     {
         time += Time.deltaTime;
         horizontal = Input.GetAxisRaw("Horizontal");
-
+        grounded();
         if (Input.GetButtonDown("Jump") && grounded())
         {
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jump);
+            an.SetTrigger("Jump");
         }
+        an.SetFloat("Height", rb.velocity.y);
+        an.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
         if (Time.timeScale == 1)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -92,10 +98,30 @@ public class PlayerScript : MonoBehaviour
 
     private bool grounded()
     {
+        Collider2D[] objs = Physics2D.OverlapCircleAll(groundCheck.position, .2f, groundLayer);
+        bool slope = false;
+        foreach (Collider2D c in objs)
+        {
+            if (c.tag == "Slope")
+            {
+               slope = true;
+            }
+        }
+        if (slope)
+        {
+            rb.gravityScale = 0;
+        }
+        else
+        {
+            rb.gravityScale = 3;
+        }
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
     public void die(bool self)
     {
+        GameObject d = Instantiate(deathsprite, transform.position, quaternion.identity);
+        d.GetComponent<Animator>().SetTrigger("Die");
+        Destroy(d, .8f);
         rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
         foreach (GameObject g in GameObject.FindGameObjectsWithTag("Clone"))
@@ -121,7 +147,7 @@ public class PlayerScript : MonoBehaviour
         }
         foreach(GameObject g in GameObject.FindGameObjectsWithTag("SpikeCeiling"))
         {
-            if (!g.GetComponent<ObjectScript>().on || !self)
+            if (!g.GetComponent<ObjectScript>().default_ || !self)
             {
                 g.transform.position = g.GetComponent<ObjectScript>().og;
                 g.GetComponent<ObjectScript>().turnoff();
@@ -145,8 +171,17 @@ public class PlayerScript : MonoBehaviour
             int order = int.Parse(other.gameObject.name.Substring(5, 1));
             if (order > checkpoint)
             {
+                StartCoroutine("fade", other.gameObject);
                 checkpoint = order;
             }
+        }
+    }
+    public IEnumerator fade(GameObject obj)
+    {
+        while (obj.transform.Find("Canvas").Find("Text").GetComponent<TextMeshProUGUI>().color != new Color(1, 1, 1))
+        {
+            obj.transform.Find("Canvas").Find("Text").GetComponent<TextMeshProUGUI>().color = Color.Lerp(obj.transform.Find("Canvas").Find("Text").GetComponent<TextMeshProUGUI>().color, new Color(1, 1, 1),.5f);
+            yield return new WaitForSeconds(.1f);
         }
     }
     public IEnumerator clone(bool reverse)
@@ -213,7 +248,6 @@ public class PlayerScript : MonoBehaviour
     }
     public void LoadLevel()
     {
-        // reset variables
         rb.velocity = new UnityEngine.Vector2(0, 0);
         reversed = false;
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
