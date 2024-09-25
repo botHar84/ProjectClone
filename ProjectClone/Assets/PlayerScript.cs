@@ -222,8 +222,8 @@ public class PlayerScript : MonoBehaviour
                             {
                                 current.transform.localScale = new UnityEngine.Vector3(current.transform.localScale.y*-1, current.transform.localScale.y, current.transform.localScale.z);
                             }
-                            current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Speed", startFrame.speed);
                             current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Height", startFrame.height);
+                            current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Speed", startFrame.speed);
                             if (startFrame.jump == 1)
                             {
                                 current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Jump");

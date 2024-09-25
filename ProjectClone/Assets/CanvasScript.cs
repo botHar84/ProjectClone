@@ -64,9 +64,19 @@ public class CanvasScript : MonoBehaviour
             {
                 g.gameObject.GetComponent<Image>().color = new Color((float)110/255, (float)110/255, (float)110/255, 1);
             }
-            for (int i = 1; i <= PlayerPrefs.GetInt("HighestLevel")+1; i++)
+            if (PlayerPrefs.GetInt("HighestLevel") == 10)
             {
-                levelcollection.Find("Level"+i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                for (int i = 1; i <= PlayerPrefs.GetInt("HighestLevel"); i++)
+                {
+                    levelcollection.Find("Level"+i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                }
+            }
+            else
+            {
+                for (int i = 1; i <= PlayerPrefs.GetInt("HighestLevel")+1; i++)
+                {
+                    levelcollection.Find("Level"+i).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                }
             }
         }
     }
