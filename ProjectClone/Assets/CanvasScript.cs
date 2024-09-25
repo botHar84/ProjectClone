@@ -18,6 +18,7 @@ public class CanvasScript : MonoBehaviour
     public Slider sfx;
     public Slider music;
     public Toggle fullscreen;
+    public Toggle playcutscene;
     public TMP_Dropdown res;
     public Resolution[] resolutions;
     public Sprite pause;
@@ -26,6 +27,7 @@ public class CanvasScript : MonoBehaviour
     public bool moving;
     void Start()
     {
+        var cutscene = PlayerPrefs.GetInt("PlayCutscene", 1);
         sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
         sfx.value = PlayerPrefs.GetFloat("SFX");
         musicmix.SetFloat("volume", (PlayerPrefs.GetFloat("Music")*80)-60f);
@@ -33,6 +35,8 @@ public class CanvasScript : MonoBehaviour
 
         Screen.fullScreen = PlayerPrefs.GetInt("Fullscreen") == 1;
         fullscreen.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
+
+        playcutscene.isOn = PlayerPrefs.GetInt("PlayCutscene") == 1;
 
         resolutions = Screen.resolutions;
         res.ClearOptions();
@@ -121,11 +125,14 @@ public class CanvasScript : MonoBehaviour
         if (PlayerPrefs.GetInt("HighestLevel")+1 >= level)
         {
             PlayerPrefs.SetInt("CurrentLevel", level);
-            SceneManager.LoadScene("SampleScene");
-        }
-        else
-        {
-            print("nah u havent unlocked that yet g");
+            if (PlayerPrefs.GetInt("CurrentLevel") == 1 && PlayerPrefs.GetInt("PlayCutscene") == 1)
+            {
+                SceneManager.LoadScene("cutscene");
+            }
+            else
+            {
+                SceneManager.LoadScene("SampleScene");
+            }
         }
     }
     public void mainmenu()
@@ -165,11 +172,22 @@ public class CanvasScript : MonoBehaviour
         Screen.fullScreen = !Screen.fullScreen;
         if (fullscreen.isOn)
         {
-            PlayerPrefs.SetInt("Fullscreen", 1);
+            PlayerPrefs.SetInt("Fullscreen", 0);
         }
         else
         {
-            PlayerPrefs.SetInt("Fullscreen", 0);
+            PlayerPrefs.SetInt("Fullscreen", 1);
+        }
+    }
+    public void cutscenetoggle()
+    {
+        if (playcutscene.isOn)
+        {
+            PlayerPrefs.SetInt("PlayCutscene", 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("PlayCutscene", 0);
         }
     }
     public void changeres()

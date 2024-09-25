@@ -1,16 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using Cinemachine;
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+ 
 [System.Serializable]
 public class Frame
 {
     public UnityEngine.Vector2 pos;
     public float timeStamp;
+    public int jump;
+    public float speed;
+    public float height;
+    public float dir;
 }
 public class PlayerScript : MonoBehaviour
 {
@@ -22,7 +28,6 @@ public class PlayerScript : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     public GameObject cameraobj;
-    public float cameraspeed;
     public int checkpoint;
     public List<Frame> frames = new List<Frame>();
     public List<Frame> current = new List<Frame>();
@@ -48,6 +53,7 @@ public class PlayerScript : MonoBehaviour
         {
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jump);
             an.SetTrigger("Jump");
+            current.Add(new Frame{pos = transform.position, timeStamp = time, jump = 1, height = rb.velocity.y, speed = Mathf.Abs(rb.velocity.x), dir = transform.localScale.x});
         }
         an.SetFloat("Height", rb.velocity.y);
         an.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
@@ -77,12 +83,10 @@ public class PlayerScript : MonoBehaviour
             localScale.x *= -1f;
             transform.localScale = localScale;
         }
-
-        cameraobj.transform.position = UnityEngine.Vector3.Lerp(cameraobj.transform.position, new UnityEngine.Vector3(transform.position.x, transform.position.y, -10), cameraspeed);
         
         if (count==5)
         {
-            current.Add(new Frame{pos = transform.position, timeStamp = time});
+            current.Add(new Frame{pos = transform.position, timeStamp = time, jump = 0, height = rb.velocity.y, speed = Mathf.Abs(rb.velocity.x), dir = transform.localScale.x});
             count=1;
         }
         else
@@ -119,8 +123,12 @@ public class PlayerScript : MonoBehaviour
     }
     public void die(bool self)
     {
+        if (PlayerPrefs.GetInt("CurrentLevel") == 8)
+        {
+            cameraobj.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
+        }
         GameObject d = Instantiate(deathsprite, transform.position, quaternion.identity);
-        d.GetComponent<Animator>().SetTrigger("Die");
+        d.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
         Destroy(d, .8f);
         rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
@@ -161,6 +169,7 @@ public class PlayerScript : MonoBehaviour
         current.Clear();
         GameObject point = GameObject.Find("Point"+checkpoint);
         transform.position = point.transform.position;
+        an.SetTrigger("Spawn");
         StartCoroutine("clone", reversed);
         reversed = false;
     }
@@ -191,7 +200,7 @@ public class PlayerScript : MonoBehaviour
         GameObject current = Instantiate(cloneobj, point.transform.position, quaternion.identity);
         if (reverse)
         {
-            current.GetComponent<SpriteRenderer>().color = Color.blue;
+            current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
             for (int i = frames.Count-2; i > 0; i--)
             {
                 if (frames.Count > i)
@@ -205,6 +214,20 @@ public class PlayerScript : MonoBehaviour
                         if (current != null)
                         {
                             current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                            if (startFrame.dir < 0 && current.transform.localScale.y > 0)
+                            {
+                                current.transform.localScale = new UnityEngine.Vector3(current.transform.localScale.y, current.transform.localScale.y, current.transform.localScale.z);
+                            }
+                            else
+                            {
+                                current.transform.localScale = new UnityEngine.Vector3(current.transform.localScale.y*-1, current.transform.localScale.y, current.transform.localScale.z);
+                            }
+                            current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Speed", startFrame.speed);
+                            current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Height", startFrame.height);
+                            if (startFrame.jump == 1)
+                            {
+                                current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Jump");
+                            }
                         }
                         else
                         {
@@ -219,9 +242,14 @@ public class PlayerScript : MonoBehaviour
                     break;
                 }
             }
+            if (current != null)
+            {
+                current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Spawn");
+            }
         }
         else
         {
+            current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Spawn");
             for (int i = 0; i < frames.Count - 1; i++)
             {
                 Frame startFrame = frames[i];
@@ -234,6 +262,20 @@ public class PlayerScript : MonoBehaviour
                     if (current != null)
                     {
                         current.transform.position = UnityEngine.Vector2.Lerp(startFrame.pos, endFrame.pos, elapsedTime / timeBetweenFrames);
+                        if (startFrame.dir < 0 && current.transform.localScale.y > 0)
+                        {
+                            current.transform.localScale = new UnityEngine.Vector3(current.transform.localScale.y*-1, current.transform.localScale.y, current.transform.localScale.z);
+                        }
+                        else
+                        {
+                            current.transform.localScale = new UnityEngine.Vector3(current.transform.localScale.y, current.transform.localScale.y, current.transform.localScale.z);
+                        }
+                        current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Speed", startFrame.speed);
+                        current.transform.Find("Sprite").GetComponent<Animator>().SetFloat("Height", startFrame.height);
+                        if (startFrame.jump == 1)
+                        {
+                            current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Jump");
+                        }
                     }
                     else
                     {
@@ -243,8 +285,12 @@ public class PlayerScript : MonoBehaviour
                     yield return null;
                 }
             }
+            if (current != null)
+            {
+                current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
+            }
         }
-        Destroy(current);
+        Destroy(current, .8f);
     }
     public void LoadLevel()
     {
@@ -254,12 +300,19 @@ public class PlayerScript : MonoBehaviour
         checkpoint = 0;
         frames.Clear();
         current.Clear();
+
         foreach(GameObject g in levels)
         {
             g.SetActive(false);
         }
         levels[PlayerPrefs.GetInt("CurrentLevel")-1].SetActive(true);
-        transform.position = levels[PlayerPrefs.GetInt("CurrentLevel")-1].transform.Find("Objects").Find("Point0").position;
+        if (PlayerPrefs.GetInt("CurrentLevel") == 10)
+        transform.position = GameObject.Find("Point"+checkpoint).transform.position;
         cs.extHelp("Level "+PlayerPrefs.GetInt("CurrentLevel"));
+        if (PlayerPrefs.GetInt("CurrentLevel") == 8)
+        {
+            cameraobj.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
+        }
+        cameraobj.GetComponent<CinemachineConfiner>().m_BoundingShape2D = GameObject.Find("Camera bound").GetComponent<PolygonCollider2D>();
     }
 }
