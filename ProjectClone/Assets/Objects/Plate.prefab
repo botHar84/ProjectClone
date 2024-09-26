@@ -153,3 +153,11 @@ MonoBehaviour:
   subject: {fileID: 0}
   og: {x: 0, y: 0, z: 0}
   change: {x: 0, y: 0, z: 0}
+  spikeCeilingSFX: {fileID: 8300000, guid: d970b38723d06f344bb67e639ea36699, type: 3}
+  platformMovingSFX: {fileID: 8300000, guid: cf60066ca093e934fb6c5cebb258ba7d, type: 3}
+  pressurePlateUpSFX: {fileID: 8300000, guid: fd76e2b7864c5b241b2663a91d98af3b, type: 3}
+  pressurePlateDownSFX: {fileID: 8300000, guid: 6d1067f6891044447bf4d2b69e4bd414, type: 3}
+  leverOnSFX: {fileID: 8300000, guid: 64893d63af630184697d7150dd0ba7aa, type: 3}
+  leverOffSFX: {fileID: 8300000, guid: 246654fde13d7f64394986b255ecf61f, type: 3}
+  doorOpenSFX: {fileID: 8300000, guid: 4c2accaa3db5b0448b8427ecd64fd3fa, type: 3}
+  timeCrystalSFX: {fileID: 8300000, guid: 62914f989937aa94fab1ff73dbfc5351, type: 3}
