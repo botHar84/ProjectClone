@@ -20,6 +20,7 @@ public class Frame
 }
 public class PlayerScript : MonoBehaviour
 {
+    public Transform playerTransform;
     public float horizontal;
     public float speed = 8f;
     public float jump = 16f;
@@ -39,6 +40,22 @@ public class PlayerScript : MonoBehaviour
     public CanvasScript cs;
     public Animator an;
     public GameObject deathsprite;
+    private bool wasGrounded;
+
+    [Header("SFX")]
+    public AudioClip footFallSFX;
+    public AudioClip jumpSFX;
+    public AudioClip landSFX;
+    public AudioClip checkpointSFX;
+    public AudioClip dyingSFX;
+    public AudioClip spawningSFX;
+    public AudioClip spikeCeilingSFX;
+
+    [Header("VFX")]
+    public ParticleSystem footFallVFX;
+    public ParticleSystem jumpVFX;
+    public ParticleSystem landVFX;
+
     void Start()
     {
         print(PlayerPrefs.GetInt("CurrentLevel"));
@@ -47,14 +64,36 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         time += Time.deltaTime;
+        bool isGrounded = grounded();
+        if (!wasGrounded && isGrounded){
+            SoundFXManager.instance.PlaySoundFXClip(landSFX, playerTransform, 1f);
+            landVFX.Play();
+        }
+
+        wasGrounded = isGrounded;
         horizontal = Input.GetAxisRaw("Horizontal");
-        grounded();
+        if (grounded() && Mathf.Abs(horizontal) > 0.1f)
+        {
+            if (!SoundFXManager.instance.IsPlaying(footFallSFX))  // Check if footstep sound is already playing
+            {
+                SoundFXManager.instance.PlaySoundFXClip(footFallSFX, playerTransform, 0.5f);
+                footFallVFX.Play();
+            }
+        }
+        else
+        {
+            SoundFXManager.instance.StopSoundFXClip(footFallSFX);  // Stop footsteps when not moving
+            footFallVFX.Stop();
+        }
         if (Input.GetButtonDown("Jump") && grounded())
         {
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jump);
             an.SetTrigger("Jump");
+            jumpVFX.Play();
+            SoundFXManager.instance.PlaySoundFXClip(jumpSFX, playerTransform, 1f);
             current.Add(new Frame{pos = transform.position, timeStamp = time, jump = 1, height = rb.velocity.y, speed = Mathf.Abs(rb.velocity.x), dir = transform.localScale.x});
         }
+
         an.SetFloat("Height", rb.velocity.y);
         an.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
         if (Time.timeScale == 1)
@@ -121,6 +160,7 @@ public class PlayerScript : MonoBehaviour
         }
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
+
     public void die(bool self)
     {
         if (PlayerPrefs.GetInt("CurrentLevel") == 8)
@@ -129,6 +169,7 @@ public class PlayerScript : MonoBehaviour
         }
         GameObject d = Instantiate(deathsprite, transform.position, quaternion.identity);
         d.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
+        SoundFXManager.instance.PlaySoundFXClip(dyingSFX, playerTransform, 1f);
         Destroy(d, .8f);
         rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
@@ -170,6 +211,11 @@ public class PlayerScript : MonoBehaviour
         GameObject point = GameObject.Find("Point"+checkpoint);
         transform.position = point.transform.position;
         an.SetTrigger("Spawn");
+        if (SoundFXManager.instance.IsPlaying(spikeCeilingSFX))
+        {
+            SoundFXManager.instance.StopSoundFXClip(spikeCeilingSFX);
+        }
+        SoundFXManager.instance.PlaySoundFXClip(spawningSFX, playerTransform, 1f);
         StartCoroutine("clone", reversed);
         reversed = false;
     }
@@ -180,6 +226,7 @@ public class PlayerScript : MonoBehaviour
             int order = int.Parse(other.gameObject.name.Substring(5, 1));
             if (order > checkpoint)
             {
+                SoundFXManager.instance.PlaySoundFXClip(checkpointSFX, playerTransform, 1f);
                 StartCoroutine("fade", other.gameObject);
                 checkpoint = order;
             }

@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2768603228040245132}
+  - {fileID: 7341250384099204668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2237421731837736000
@@ -155,6 +156,14 @@ MonoBehaviour:
   subject: {fileID: 0}
   og: {x: 0, y: 0, z: 0}
   change: {x: 0, y: 0, z: 0}
+  spikeCeilingSFX: {fileID: 8300000, guid: d970b38723d06f344bb67e639ea36699, type: 3}
+  platformMovingSFX: {fileID: 8300000, guid: cf60066ca093e934fb6c5cebb258ba7d, type: 3}
+  pressurePlateUpSFX: {fileID: 8300000, guid: fd76e2b7864c5b241b2663a91d98af3b, type: 3}
+  pressurePlateDownSFX: {fileID: 8300000, guid: 6d1067f6891044447bf4d2b69e4bd414, type: 3}
+  leverOnSFX: {fileID: 8300000, guid: 64893d63af630184697d7150dd0ba7aa, type: 3}
+  leverOffSFX: {fileID: 8300000, guid: 246654fde13d7f64394986b255ecf61f, type: 3}
+  doorOpenSFX: {fileID: 8300000, guid: 4c2accaa3db5b0448b8427ecd64fd3fa, type: 3}
+  timeCrystalSFX: {fileID: 8300000, guid: 62914f989937aa94fab1ff73dbfc5351, type: 3}
 --- !u!95 &5404095436340974256
 Animator:
   serializedVersion: 5
@@ -330,6 +339,14 @@ MonoBehaviour:
   subject: {fileID: 0}
   og: {x: 0, y: 0, z: 0}
   change: {x: 0, y: 0, z: 0}
+  spikeCeilingSFX: {fileID: 0}
+  platformMovingSFX: {fileID: 0}
+  pressurePlateUpSFX: {fileID: 0}
+  pressurePlateDownSFX: {fileID: 0}
+  leverOnSFX: {fileID: 0}
+  leverOffSFX: {fileID: 0}
+  doorOpenSFX: {fileID: 0}
+  timeCrystalSFX: {fileID: 0}
 --- !u!95 &2021083396766715941
 Animator:
   serializedVersion: 5
@@ -351,3 +368,65 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &7260945830241686236
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1114103300305978231}
+    m_Modifications:
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831745295033610067, guid: 6161663762c394849883b58bd230af88, type: 3}
+      propertyPath: m_Name
+      value: DoorAura
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6161663762c394849883b58bd230af88, type: 3}
+--- !u!4 &7341250384099204668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 82564076576050400, guid: 6161663762c394849883b58bd230af88, type: 3}
+  m_PrefabInstance: {fileID: 7260945830241686236}
+  m_PrefabAsset: {fileID: 0}
