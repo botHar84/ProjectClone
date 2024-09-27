@@ -257,9 +257,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Jump
-    m_EventTreshold: 0
+  - m_ConditionMode: 3
+    m_ConditionEvent: Height
+    m_EventTreshold: 0.04
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1296136621870778006}
   m_Solo: 0

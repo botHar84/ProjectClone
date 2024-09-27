@@ -20,6 +20,14 @@ public class KillPlayer : MonoBehaviour
                 GameObject.Find("Boss").GetComponent<BossScript>().hurt();
                 Destroy(gameObject);
             }
+            else if (weak == 2)
+            {
+                if (other.gameObject.GetComponent<PlayerScript>().reversed)
+                {
+                    GameObject.Find("Boss").GetComponent<BossScript>().hurt();
+                    Destroy(gameObject);
+                }
+            }
             else
             {
                 other.gameObject.GetComponent<PlayerScript>().die(false);
@@ -32,9 +40,13 @@ public class KillPlayer : MonoBehaviour
                 GameObject.Find("Boss").GetComponent<BossScript>().hurt();
                 Destroy(gameObject);
             }
-            else if (weak == 2) // reverse
+            else if (weak == 2)
             {
-                
+                if (other.gameObject.name == "ReversedClone")
+                {
+                    GameObject.Find("Boss").GetComponent<BossScript>().hurt();
+                    Destroy(gameObject);
+                }
             }
         }
     }

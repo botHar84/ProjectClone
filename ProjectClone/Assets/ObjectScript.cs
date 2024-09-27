@@ -51,7 +51,7 @@ public class ObjectScript : MonoBehaviour
                 if (!on)
                 {
                     turnon();
-                    SoundFXManager.instance.PlaySoundFXClip(leverOnSFX, transform, 1f);
+                    SoundFXManager.instance.PlaySoundFXClip(leverOnSFX, gameObject, 1f);
                     //subject.turnon();
                 }
             }
@@ -69,10 +69,9 @@ public class ObjectScript : MonoBehaviour
                     {
                         PlayerPrefs.SetInt("HighestLevel", PlayerPrefs.GetInt("CurrentLevel"));
                     }
-                    if (PlayerPrefs.GetInt("CurrentLevel") < 10) // any levels left?
+                    if (PlayerPrefs.GetInt("CurrentLevel") < 10)
                     {
                         PlayerPrefs.SetInt("CurrentLevel", PlayerPrefs.GetInt("CurrentLevel")+1);
-                        print("new level");
                         other.gameObject.GetComponent<PlayerScript>().LoadLevel();
                     }
                     else
@@ -80,22 +79,11 @@ public class ObjectScript : MonoBehaviour
                         // win screen
                     }
                 }
-                else if (type == "TimeCrystal")
+                else if (type == "TimeCrystal" && !other.gameObject.GetComponent<PlayerScript>().reversed)
                 {
-                     // Create a unique key for this level's time crystal
-                    string timeCrystalKey = "TimeCrystalTouched_Level" + PlayerPrefs.GetInt("CurrentLevel");
-
-                    // Check if the player has already touched the crystal in this level
-                    if (PlayerPrefs.GetInt(timeCrystalKey, 0) == 0)
-                    {
-                        // First time touching the crystal in this level
-                        other.gameObject.GetComponent<PlayerScript>().reversed = true;
-                        other.gameObject.transform.Find("TimeParticles").GetComponent<ParticleSystem>().Play();
-                        SoundFXManager.instance.PlaySoundFXClip(timeCrystalSFX, transform, 1f);
-
-                        // Mark the time crystal as touched for this level
-                        PlayerPrefs.SetInt(timeCrystalKey, 1);
-                    }
+                    other.gameObject.GetComponent<PlayerScript>().reversed = true;
+                    other.gameObject.transform.Find("TimeParticles").GetComponent<ParticleSystem>().Play();
+                    SoundFXManager.instance.PlaySoundFXClip(timeCrystalSFX, gameObject, 1f);
                 }
             }
         }
@@ -119,24 +107,35 @@ public class ObjectScript : MonoBehaviour
         on = true;
         if (type == "Plate" || type == "Lever")
         {
-            subject.turnon();
+            if (subject != null)
+            {
+                subject.turnon();
+            }
+            else if (PlayerPrefs.GetInt("CurrentLevel") == 10)
+            {
+                if (GameObject.Find("Boss").GetComponent<BossScript>().shielded)
+                {
+                    GameObject.Find("Boss").GetComponent<BossScript>().shielded = false;
+                    GameObject.Find("Boss").GetComponent<BossScript>().shield.SetActive(false);
+                }
+            }
         }
         if (type == "Lever" || type == "EndDoor")
         {
             gameObject.GetComponent<Animator>().SetTrigger("On");
-            SoundFXManager.instance.PlaySoundFXClip(doorOpenSFX, transform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(doorOpenSFX, gameObject, 1f);
         }
         else if (type == "Plate")
         {
             sr.sprite = activated;
-            SoundFXManager.instance.PlaySoundFXClip(pressurePlateDownSFX, transform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(pressurePlateDownSFX, gameObject, 1f);
         }
         if (type == "Door")
         {
             GetComponent<BoxCollider2D>().enabled = false;
         }
         if (gameObject.tag == "SpikeCeiling"){
-            SoundFXManager.instance.PlaySoundFXClip(spikeCeilingSFX, transform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(spikeCeilingSFX, gameObject, 1f);
         }
     }
     public void turnoff()
@@ -144,17 +143,20 @@ public class ObjectScript : MonoBehaviour
         on = false;
         if (name == "Plate" || name == "Lever")
         {
-            subject.turnoff();
+            if (subject != null)
+            {
+                subject.turnoff();
+            }
         }
         if (name == "Lever" || name == "EndDoor")
         {
             gameObject.GetComponent<Animator>().SetTrigger("Off");
-            SoundFXManager.instance.PlaySoundFXClip(leverOffSFX, transform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(leverOffSFX, gameObject, 1f);
         }
         else if (name == "Plate")
         {
             sr.sprite = unactivated;
-            SoundFXManager.instance.PlaySoundFXClip(pressurePlateUpSFX, transform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(pressurePlateUpSFX, gameObject, 1f);
             if (SoundFXManager.instance.IsPlaying(platformMovingSFX))
             {
                 SoundFXManager.instance.StopSoundFXClip(platformMovingSFX);
@@ -175,7 +177,7 @@ public class ObjectScript : MonoBehaviour
                 {
                     if (!SoundFXManager.instance.IsPlaying(platformMovingSFX))
                     {
-                        SoundFXManager.instance.PlaySoundFXClip(platformMovingSFX, transform, 1f);
+                        SoundFXManager.instance.PlaySoundFXClip(platformMovingSFX, gameObject, 1f);
                     }
                 }
                 

@@ -18,9 +18,9 @@ public class SoundFXManager : MonoBehaviour
     }
 
     // Function to play a sound effect
-    public void PlaySoundFXClip(AudioClip audioClip, Transform spawnTransform, float volume){
+    public void PlaySoundFXClip(AudioClip audioClip, GameObject owner, float volume){
         // Spawn in game object
-        AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
+        AudioSource audioSource = Instantiate(soundFXObject, owner.transform);
         // Assign the audioClip
         audioSource.clip = audioClip;
         // Assign volume
@@ -70,7 +70,14 @@ public class SoundFXManager : MonoBehaviour
         // Check if the audio clip is currently playing
         if (activeSoundFX.ContainsKey(audioClip))
         {
-            return activeSoundFX[audioClip].isPlaying;
+            if (activeSoundFX[audioClip] != null)
+            {
+                return activeSoundFX[audioClip].isPlaying;
+            }
+            else
+            {
+                return false;
+            }
         }
         return false;
 }

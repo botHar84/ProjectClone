@@ -58,7 +58,6 @@ public class PlayerScript : MonoBehaviour
 
     void Start()
     {
-        print(PlayerPrefs.GetInt("CurrentLevel"));
         LoadLevel();
     }
     void Update()
@@ -66,7 +65,7 @@ public class PlayerScript : MonoBehaviour
         time += Time.deltaTime;
         bool isGrounded = grounded();
         if (!wasGrounded && isGrounded){
-            SoundFXManager.instance.PlaySoundFXClip(landSFX, playerTransform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(landSFX, gameObject, 1f);
             landVFX.Play();
         }
 
@@ -76,7 +75,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (!SoundFXManager.instance.IsPlaying(footFallSFX))  // Check if footstep sound is already playing
             {
-                SoundFXManager.instance.PlaySoundFXClip(footFallSFX, playerTransform, 0.5f);
+                SoundFXManager.instance.PlaySoundFXClip(footFallSFX, gameObject, 0.5f);
                 footFallVFX.Play();
             }
         }
@@ -90,7 +89,7 @@ public class PlayerScript : MonoBehaviour
             rb.velocity = new UnityEngine.Vector2(rb.velocity.x, jump);
             an.SetTrigger("Jump");
             jumpVFX.Play();
-            SoundFXManager.instance.PlaySoundFXClip(jumpSFX, playerTransform, 1f);
+            SoundFXManager.instance.PlaySoundFXClip(jumpSFX, gameObject, 1f);
             current.Add(new Frame{pos = transform.position, timeStamp = time, jump = 1, height = rb.velocity.y, speed = Mathf.Abs(rb.velocity.x), dir = transform.localScale.x});
         }
 
@@ -169,7 +168,7 @@ public class PlayerScript : MonoBehaviour
         }
         GameObject d = Instantiate(deathsprite, transform.position, quaternion.identity);
         d.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
-        SoundFXManager.instance.PlaySoundFXClip(dyingSFX, playerTransform, 1f);
+        SoundFXManager.instance.PlaySoundFXClip(dyingSFX, gameObject, 1f);
         Destroy(d, .8f);
         rb.velocity = new UnityEngine.Vector2(0, 0);
         transform.Find("TimeParticles").GetComponent<ParticleSystem>().Stop();
@@ -215,7 +214,7 @@ public class PlayerScript : MonoBehaviour
         {
             SoundFXManager.instance.StopSoundFXClip(spikeCeilingSFX);
         }
-        SoundFXManager.instance.PlaySoundFXClip(spawningSFX, playerTransform, 1f);
+        SoundFXManager.instance.PlaySoundFXClip(spawningSFX, gameObject, 1f);
         StartCoroutine("clone", reversed);
         reversed = false;
     }
@@ -226,7 +225,7 @@ public class PlayerScript : MonoBehaviour
             int order = int.Parse(other.gameObject.name.Substring(5, 1));
             if (order > checkpoint)
             {
-                SoundFXManager.instance.PlaySoundFXClip(checkpointSFX, playerTransform, 1f);
+                SoundFXManager.instance.PlaySoundFXClip(checkpointSFX, gameObject, 1f);
                 StartCoroutine("fade", other.gameObject);
                 checkpoint = order;
             }
@@ -247,6 +246,7 @@ public class PlayerScript : MonoBehaviour
         GameObject current = Instantiate(cloneobj, point.transform.position, quaternion.identity);
         if (reverse)
         {
+            current.name = "ReversedClone";
             current.transform.Find("Sprite").GetComponent<Animator>().SetTrigger("Die");
             for (int i = frames.Count-2; i > 0; i--)
             {
@@ -354,6 +354,9 @@ public class PlayerScript : MonoBehaviour
         }
         levels[PlayerPrefs.GetInt("CurrentLevel")-1].SetActive(true);
         if (PlayerPrefs.GetInt("CurrentLevel") == 10)
+        {
+
+        }
         transform.position = GameObject.Find("Point"+checkpoint).transform.position;
         cs.extHelp("Level "+PlayerPrefs.GetInt("CurrentLevel"));
         if (PlayerPrefs.GetInt("CurrentLevel") == 8)

@@ -11,6 +11,7 @@ TagManager:
   - SpikeCeiling
   - Slope
   - Weakpoint
+  - SFX
   layers:
   - Default
   - TransparentFX

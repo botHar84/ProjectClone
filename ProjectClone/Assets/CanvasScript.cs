@@ -18,7 +18,6 @@ public class CanvasScript : MonoBehaviour
     public Slider sfx;
     public Slider music;
     public Toggle fullscreen;
-    public Toggle playcutscene;
     public TMP_Dropdown res;
     public Resolution[] resolutions;
     public Sprite pause;
@@ -27,16 +26,15 @@ public class CanvasScript : MonoBehaviour
     public bool moving;
     void Start()
     {
-        var cutscene = PlayerPrefs.GetInt("PlayCutscene", 1);
         sfxmix.SetFloat("volume", (PlayerPrefs.GetFloat("SFX")*80)-60f);
         sfx.value = PlayerPrefs.GetFloat("SFX");
+        sfx.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("SFX")*100)+"%";
         musicmix.SetFloat("volume", (PlayerPrefs.GetFloat("Music")*80)-60f);
         music.value = PlayerPrefs.GetFloat("Music");
+        music.gameObject.transform.Find("NumberText").GetComponent<TextMeshProUGUI>().text = (int)(PlayerPrefs.GetFloat("Music")*100)+"%";
 
         Screen.fullScreen = PlayerPrefs.GetInt("Fullscreen") == 1;
         fullscreen.isOn = PlayerPrefs.GetInt("Fullscreen") == 1;
-
-        playcutscene.isOn = PlayerPrefs.GetInt("PlayCutscene") == 1;
 
         resolutions = Screen.resolutions;
         res.ClearOptions();
@@ -57,6 +55,12 @@ public class CanvasScript : MonoBehaviour
         if (!menu && PlayerPrefs.GetInt("CurrentLevel") == 1)
         {
             StartCoroutine("help", "HelpMessage");
+        }
+        else if (!menu && PlayerPrefs.GetInt("CurrentLevel") == 10)
+        {
+            StartCoroutine("help", "HelpMessage1");
+            StartCoroutine("help", "HelpMessage2");
+            StartCoroutine("help", "HelpMessage3");
         }
         if (menu)
         {
@@ -90,7 +94,7 @@ public class CanvasScript : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape) && menu)
         {
-            if (!moving)
+            if (!moving && Mathf.Abs(backgrounds.transform.position.y) > 3)
             {
                 StartCoroutine(scroll(0, main));
             }
@@ -106,12 +110,20 @@ public class CanvasScript : MonoBehaviour
             backgrounds.GetComponent<Image>().sprite = play;
             backgrounds.GetComponent<RectTransform>().localPosition += new Vector3(1, 3);
             Time.timeScale = 0;
+            foreach(GameObject g in GameObject.FindGameObjectsWithTag("SFX"))
+            {
+                g.GetComponent<AudioSource>().Pause();
+            }
         }
         else
         {
             backgrounds.GetComponent<Image>().sprite = pause;
             backgrounds.GetComponent<RectTransform>().localPosition -= new Vector3(1, 3);
             Time.timeScale = 1;
+            foreach(GameObject g in GameObject.FindGameObjectsWithTag("SFX"))
+            {
+                g.GetComponent<AudioSource>().Play();
+            }
         }
     }
     public void playfunc()
@@ -135,7 +147,7 @@ public class CanvasScript : MonoBehaviour
         if (PlayerPrefs.GetInt("HighestLevel")+1 >= level)
         {
             PlayerPrefs.SetInt("CurrentLevel", level);
-            if (PlayerPrefs.GetInt("CurrentLevel") == 1 && PlayerPrefs.GetInt("PlayCutscene") == 1)
+            if (PlayerPrefs.GetInt("CurrentLevel") == 1)
             {
                 SceneManager.LoadScene("cutscene");
             }
@@ -189,17 +201,6 @@ public class CanvasScript : MonoBehaviour
             PlayerPrefs.SetInt("Fullscreen", 1);
         }
     }
-    public void cutscenetoggle()
-    {
-        if (playcutscene.isOn)
-        {
-            PlayerPrefs.SetInt("PlayCutscene", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("PlayCutscene", 0);
-        }
-    }
     public void changeres()
     {
         Resolution setting_res = resolutions[res.value];
@@ -216,6 +217,21 @@ public class CanvasScript : MonoBehaviour
         {
             yield return new WaitForSeconds(10);
             message = "Press [ESC] to see helpful keybinds.";
+        }
+        else if (message == "HelpMessage1")
+        {
+            yield return new WaitForSeconds(10);
+            message = "Hit the wizard's red weakspots to damage him before time runs out!";
+        }
+        else if (message == "HelpMessage2")
+        {
+            yield return new WaitForSeconds(15);
+            message = "Blue weakspots require a reversed clone to damage the boss.";
+        }
+        else if (message == "HelpMessage3")
+        {
+            yield return new WaitForSeconds(20);
+            message = "Levers on the edge of the plates dismantle his shield.";
         }
         if (PlayerPrefs.GetInt("CurrentLevel") == 1 || (PlayerPrefs.GetInt("CurrentLevel") != 1 && message != "Press [ESC] to see helpful keybinds."))
         {
