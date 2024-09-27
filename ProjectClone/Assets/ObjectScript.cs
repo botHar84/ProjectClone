@@ -134,7 +134,8 @@ public class ObjectScript : MonoBehaviour
         {
             GetComponent<BoxCollider2D>().enabled = false;
         }
-        if (gameObject.tag == "SpikeCeiling"){
+        if (gameObject.tag == "SpikeCeiling")
+        {
             SoundFXManager.instance.PlaySoundFXClip(spikeCeilingSFX, gameObject, 1f);
         }
     }

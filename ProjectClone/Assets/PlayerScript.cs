@@ -353,15 +353,15 @@ public class PlayerScript : MonoBehaviour
             g.SetActive(false);
         }
         levels[PlayerPrefs.GetInt("CurrentLevel")-1].SetActive(true);
-        if (PlayerPrefs.GetInt("CurrentLevel") == 10)
-        {
-
-        }
         transform.position = GameObject.Find("Point"+checkpoint).transform.position;
         cs.extHelp("Level "+PlayerPrefs.GetInt("CurrentLevel"));
         if (PlayerPrefs.GetInt("CurrentLevel") == 8)
         {
             cameraobj.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 10;
+        }
+        else
+        {
+            cameraobj.GetComponent<CinemachineVirtualCamera>().m_Lens.OrthographicSize = 6;
         }
         cameraobj.GetComponent<CinemachineConfiner>().m_BoundingShape2D = GameObject.Find("Camera bound").GetComponent<PolygonCollider2D>();
     }

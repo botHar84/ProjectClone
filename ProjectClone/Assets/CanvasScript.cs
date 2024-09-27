@@ -194,11 +194,11 @@ public class CanvasScript : MonoBehaviour
         Screen.fullScreen = !Screen.fullScreen;
         if (fullscreen.isOn)
         {
-            PlayerPrefs.SetInt("Fullscreen", 0);
+            PlayerPrefs.SetInt("Fullscreen", 1);
         }
         else
         {
-            PlayerPrefs.SetInt("Fullscreen", 1);
+            PlayerPrefs.SetInt("Fullscreen", 0);
         }
     }
     public void changeres()
@@ -241,7 +241,7 @@ public class CanvasScript : MonoBehaviour
                 main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
                 yield return new WaitForSeconds(.006f);
             }
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             for (int i = 255; i >= 0; i--)
             {
                 main.GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, (float)i/255);
