@@ -15,12 +15,26 @@ public class CutsceneScript : MonoBehaviour
     {
         if (director == dir)
         {
-            SceneManager.LoadScene("SampleScene");
+            if (SceneManager.GetActiveScene().name == "Cutscene 3")
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                SceneManager.LoadScene("SampleScene");
+            }
         }
     }
     public void skip()
     {
-        SceneManager.LoadScene("SampleScene");
+        if (SceneManager.GetActiveScene().name == "Cutscene 3")
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+        else
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
     }
     void OnDisable()
     {

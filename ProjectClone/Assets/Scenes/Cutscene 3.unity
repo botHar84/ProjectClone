@@ -7066,7 +7066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdf4d3e631a7bcc4a80b2807174a1294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  director: {fileID: 0}
+  director: {fileID: 766226048}
 --- !u!114 &274998833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17939,7 +17939,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1134.7397, y: -792.49493}
+  m_AnchoredPosition: {x: 946.4, y: -745.6}
   m_SizeDelta: {x: 162.6, y: 87}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &850370135
@@ -22669,7 +22669,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2
+  orthographic size: 3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -24734,11 +24734,16 @@ PrefabInstance:
       propertyPath: on
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2237421731837736000, guid: 4e47ce9138a92304f857d3bd8c03534f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8688d73f5c0134343a728250fe6272c8, type: 3}
     - target: {fileID: 4518252020649992340, guid: 4e47ce9138a92304f857d3bd8c03534f, type: 3}
       propertyPath: m_Name
       value: EndDoor
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1504120778756037710, guid: 4e47ce9138a92304f857d3bd8c03534f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

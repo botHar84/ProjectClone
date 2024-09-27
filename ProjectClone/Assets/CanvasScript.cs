@@ -149,7 +149,11 @@ public class CanvasScript : MonoBehaviour
             PlayerPrefs.SetInt("CurrentLevel", level);
             if (PlayerPrefs.GetInt("CurrentLevel") == 1)
             {
-                SceneManager.LoadScene("cutscene");
+                SceneManager.LoadScene("Cutscene 1");
+            }
+            else if (PlayerPrefs.GetInt("CurrentLevel") == 10)
+            {
+                SceneManager.LoadScene("Cutscene 2");
             }
             else
             {

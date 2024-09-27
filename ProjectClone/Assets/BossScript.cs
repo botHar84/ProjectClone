@@ -191,4 +191,8 @@ public class BossScript : MonoBehaviour
             Instantiate(weakpoint, transform.position+new UnityEngine.Vector3(x, y), quaternion.identity);
         }
     }
+    public void endscene()
+    {
+        SceneManager.LoadScene("Cutscene 3");
+    }
 }

@@ -13,4 +13,8 @@ public class SpriteScript : MonoBehaviour
     {
         bs.tp();
     }
+    public void end()
+    {
+        bs.endscene();
+    }
 }
