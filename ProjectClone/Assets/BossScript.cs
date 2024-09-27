@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Numerics;
 using TMPro;
 using Unity.Mathematics;
-using UnityEditor.SearchService;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -29,6 +30,10 @@ public class BossScript : MonoBehaviour
     public Slider bar;
     public TextMeshProUGUI countdown;
     public AudioClip music;
+    public AudioClip bang;
+    public AudioClip hurtsfx;
+    public AudioClip attacksfx;
+    public AudioClip tpsfx;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,18 +48,18 @@ public class BossScript : MonoBehaviour
     {
         timer += Time.deltaTime;
         timer_ += Time.deltaTime;
-        if (timer > 30)
+        if (timer > 20+hp)
         {
             timer = 0;
             an.SetTrigger("Teleport");
         }
-        if (timer_ > 10)
+        if (timer_ > 5+hp)
         {
             timer_ = 0;
             an.SetTrigger("Attack");
         }
         count -= Time.deltaTime;
-        if ((int)count%60 < 9) // sec
+        if ((int)count%60 <= 9)
         {
             countdown.text = (int)count/60+ ":0"+(int)count%60;
         }
@@ -67,35 +72,42 @@ public class BossScript : MonoBehaviour
             SceneManager.LoadScene("SampleScene");
         }
         player = GameObject.Find("Player");
-        if (player.transform.position.x > transform.position.x && gameObject.GetComponent<SpriteRenderer>().flipX)
+        if (player.transform.position.x > transform.position.x && an.gameObject.GetComponent<SpriteRenderer>().flipX)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            an.gameObject.GetComponent<SpriteRenderer>().flipX = false;
         }
-        else if (player.transform.position.x < transform.position.x && !gameObject.GetComponent<SpriteRenderer>().flipX)
+        else if (player.transform.position.x < transform.position.x && !an.gameObject.GetComponent<SpriteRenderer>().flipX)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            an.gameObject.GetComponent<SpriteRenderer>().flipX = true;
         }
     }
     public void tp()
     {
+        SoundFXManager.instance.PlaySoundFXClip(tpsfx, gameObject, 1f);
+        timer = 0;
+        int random = 0;
         if (hp > 0)
         {
-            timer = 0;
-            int random = UnityEngine.Random.Range(0, 3);
+            random = UnityEngine.Random.Range(0, 3);
             while(random == last)
             {
                 random = UnityEngine.Random.Range(0, 3);
             }
-            transform.localPosition = new UnityEngine.Vector2(pos[random], transform.localPosition.y);
-            ws();
-            last = random;
         }
+        else
+        {
+            random = 1;
+        }
+        transform.localPosition = new UnityEngine.Vector2(pos[random], transform.localPosition.y);
+        ws();
+        last = random;
     }
     public void attack()
     {
         if (hp > 0)
         {
             ws();
+            SoundFXManager.instance.PlaySoundFXClip(attacksfx, gameObject, .25f);
             timer_ = 0;
             int randomatk = UnityEngine.Random.Range(0, 3);
             if (randomatk == 0)
@@ -108,7 +120,7 @@ public class BossScript : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 6-hp; i++)
                 {
                     int x = UnityEngine.Random.Range(-2, 2);
                     int y = UnityEngine.Random.Range(0, 3);
@@ -144,11 +156,16 @@ public class BossScript : MonoBehaviour
             }
             else
             {
-                an.SetTrigger("Hurt");
+                SoundFXManager.instance.PlaySoundFXClip(hurtsfx, gameObject, 1f);
                 if (hp == 1)
                 {
+                    GameObject.Find("Global Light 2D").GetComponent<Light2D>().color = new Color(1, 117/255, 117/255, 1);
+                    GameObject.Find("Global Light 2D").GetComponent<Light2D>().intensity = .5f;
                     GameObject.Find("Level 10").GetComponent<AudioSource>().clip = music;
+                    GameObject.Find("Level 10").GetComponent<AudioSource>().Play();
+                    SoundFXManager.instance.PlaySoundFXClip(bang, gameObject, 1f);
                 }
+                an.SetTrigger("Hurt");
             }
         }
         else
